@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Management - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Stock Management</h1>
+        <p>View product quantities across warehouses and locations.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'inventory:stock_create' %}"
+           class="btn btn-primary">
+            + Add Stock
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+            <h2>Current Stock</h2>
+            <p>
+                {{ stocks|length }} stock record{{ stocks|length|pluralize }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Warehouse</th>
+                    <th>Location</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Last Updated</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for stock in stocks %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ stock.product.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ stock.product.sku }}
+                    </td>
+
+                    <td>
+                        {{ stock.product.category.name }}
+                    </td>
+
+                    <td>
+                        {{ stock.location.warehouse.name }}
+                    </td>
+
+                    <td>
+                        {{ stock.location.name }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ stock.quantity }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ stock.product.unit_of_measure }}
+                    </td>
+
+                    <td>
+                        {{ stock.updated_at|date:"d M Y, H:i" }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="8"
+                        style="text-align: center; padding: 40px;">
+
+                        <h3>No stock records found</h3>
+
+                        <p>
+                            Add stock for a product and location.
+                        </p>
+
+                        <a href="{% url 'inventory:stock_create' %}"
+                           class="btn btn-primary">
+                            Add Stock
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

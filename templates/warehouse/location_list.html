@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}
+Locations - StockSense
+{% endblock %}
+
+{% block page_title %}
+Locations
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Warehouse Locations</h1>
+
+        <p>
+            Manage storage, receiving and dispatch locations.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'warehouse:location_create' %}"
+        class="primary-button"
+    >
+        + Add Location
+    </a>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="success-message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+                <th>Location</th>
+                <th>Warehouse</th>
+                <th>Created</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for location in locations %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ location.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ location.warehouse.name }}
+                    </td>
+
+                    <td>
+                        {{ location.created_at|date:"d M Y" }}
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <a
+                                href="{% url 'warehouse:location_update' location.pk %}"
+                                class="edit-button"
+                            >
+                                Edit
+                            </a>
+
+                            <a
+                                href="{% url 'warehouse:location_delete' location.pk %}"
+                                class="delete-button"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="5"
+                        class="empty-row">
+
+                        No locations have been created yet.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<div class="bottom-actions">
+
+    <a
+        href="{% url 'warehouse:warehouse_list' %}"
+        class="secondary-button"
+    >
+        ← Back to Warehouses
+    </a>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        margin-bottom: 7px;
+    }
+
+    .page-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        display: inline-block;
+        text-decoration: none;
+        padding: 11px 17px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .primary-button {
+        background: #2563eb;
+        color: white;
+    }
+
+    .primary-button:hover {
+        background: #1d4ed8;
+    }
+
+    .secondary-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 12px 15px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .table-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f9fafb;
+        color: #4b5563;
+        font-size: 13px;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 7px;
+    }
+
+    .edit-button,
+    .delete-button {
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .edit-button {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .delete-button {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+
+    .bottom-actions {
+        margin-top: 20px;
+    }
+
+</style>
+
+{% endblock %}

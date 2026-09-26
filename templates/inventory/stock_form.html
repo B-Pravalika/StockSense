@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>{{ page_title }}</h1>
+
+        <p>
+            Set the current quantity of a product at a location.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="form-group">
+
+            <label for="{{ form.product.id_for_label }}">
+                Product
+            </label>
+
+            {{ form.product }}
+
+            {% if form.product.errors %}
+
+                <div class="form-error">
+                    {{ form.product.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.location.id_for_label }}">
+                Location
+            </label>
+
+            {{ form.location }}
+
+            {% if form.location.errors %}
+
+                <div class="form-error">
+                    {{ form.location.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.quantity.id_for_label }}">
+                Quantity
+            </label>
+
+            {{ form.quantity }}
+
+            {% if form.quantity.errors %}
+
+                <div class="form-error">
+                    {{ form.quantity.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a href="{% url 'inventory:stock_list' %}"
+               class="btn btn-secondary">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                {{ button_text }}
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

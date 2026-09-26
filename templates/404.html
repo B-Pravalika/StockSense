@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+
+<div class="container text-center py-5">
+
+    <h1 class="display-1 fw-bold">404</h1>
+
+    <h2>Page Not Found</h2>
+
+    <p class="text-muted">
+        The page you are looking for does not exist.
+    </p>
+
+    <a href="{% url 'dashboard:home' %}"
+       class="btn btn-primary">
+        Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

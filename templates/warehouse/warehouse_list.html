@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}
+Warehouses - StockSense
+{% endblock %}
+
+{% block page_title %}
+Warehouses
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Warehouses</h1>
+
+        <p>
+            Manage warehouses and their storage locations.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'warehouse:warehouse_create' %}"
+        class="primary-button"
+    >
+        + Add Warehouse
+    </a>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="success-message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<div class="toolbar">
+
+    <div>
+        <strong>
+            Warehouse Locations
+        </strong>
+
+        <span class="count-badge">
+            {{ warehouses|length }}
+        </span>
+    </div>
+
+    <a
+        href="{% url 'warehouse:location_list' %}"
+        class="secondary-button"
+    >
+        Manage Locations
+    </a>
+
+</div>
+
+
+<div class="warehouse-grid">
+
+    {% for warehouse in warehouses %}
+
+        <div class="warehouse-card">
+
+            <div class="warehouse-header">
+
+                <div class="warehouse-icon">
+                    🏭
+                </div>
+
+                <div class="warehouse-actions">
+
+                    <a
+                        href="{% url 'warehouse:warehouse_update' warehouse.pk %}"
+                        class="edit-button"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                        href="{% url 'warehouse:warehouse_delete' warehouse.pk %}"
+                        class="delete-button"
+                    >
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <h2>
+                {{ warehouse.name }}
+            </h2>
+
+
+            {% if warehouse.address %}
+
+                <p class="address">
+                    📍 {{ warehouse.address }}
+                </p>
+
+            {% else %}
+
+                <p class="muted">
+                    No address provided.
+                </p>
+
+            {% endif %}
+
+
+            <div class="location-section">
+
+                <div class="location-title">
+
+                    <span>
+                        Locations
+                    </span>
+
+                    <span class="count-badge">
+                        {{ warehouse.locations.count }}
+                    </span>
+
+                </div>
+
+
+                {% if warehouse.locations.all %}
+
+                    <ul class="location-list">
+
+                        {% for location in warehouse.locations.all %}
+
+                            <li>
+                                <span>
+                                    📍 {{ location.name }}
+                                </span>
+
+                                <a
+                                    href="{% url 'warehouse:location_update' location.pk %}"
+                                >
+                                    Edit
+                                </a>
+                            </li>
+
+                        {% empty %}
+
+                            <li class="muted">
+                                No locations yet.
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% endif %}
+
+
+                <a
+                    href="{% url 'warehouse:location_create' %}"
+                    class="add-location"
+                >
+                    + Add Location
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                🏭
+            </div>
+
+            <h2>
+                No Warehouses
+            </h2>
+
+            <p>
+                Create your first warehouse to start managing locations.
+            </p>
+
+            <a
+                href="{% url 'warehouse:warehouse_create' %}"
+                class="primary-button"
+            >
+                + Add Warehouse
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        margin-bottom: 7px;
+    }
+
+    .page-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        display: inline-block;
+        text-decoration: none;
+        padding: 11px 17px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .primary-button {
+        background: #2563eb;
+        color: white;
+    }
+
+    .primary-button:hover {
+        background: #1d4ed8;
+    }
+
+    .secondary-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .secondary-button:hover {
+        background: #e5e7eb;
+    }
+
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 12px 15px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .toolbar {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 17px 20px;
+        margin-bottom: 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .count-badge {
+        display: inline-block;
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 4px 9px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 6px;
+    }
+
+    .warehouse-grid {
+        display: grid;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .warehouse-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 22px;
+    }
+
+    .warehouse-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .warehouse-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eff6ff;
+        border-radius: 9px;
+
+        font-size: 23px;
+    }
+
+    .warehouse-actions {
+        display: flex;
+        gap: 7px;
+    }
+
+    .warehouse-card h2 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .address {
+        color: #4b5563;
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .muted {
+        color: #9ca3af;
+        font-size: 13px;
+    }
+
+    .location-section {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 18px;
+        margin-top: 18px;
+    }
+
+    .location-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .location-list {
+        list-style: none;
+        margin: 0 0 12px 0;
+    }
+
+    .location-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 9px 10px;
+
+        background: #f9fafb;
+
+        border-radius: 6px;
+
+        margin-bottom: 6px;
+
+        font-size: 13px;
+    }
+
+    .location-list a {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .add-location {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .edit-button,
+    .delete-button {
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .edit-button {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .delete-button {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .empty-card {
+        grid-column: 1 / -1;
+
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+
+        padding: 60px 20px;
+
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 45px;
+        margin-bottom: 15px;
+    }
+
+    .empty-card h2 {
+        margin-bottom: 8px;
+    }
+
+    .empty-card p {
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 800px) {
+
+        .warehouse-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .toolbar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

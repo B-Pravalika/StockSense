@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Move History - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Move History</h1>
+
+        <p>
+            Complete history of inventory movements.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+            <h2>Stock Ledger</h2>
+
+            <p>
+                {{ ledger_entries|length }} movement{{ ledger_entries|length|pluralize }}
+                recorded
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date & Time</th>
+
+                    <th>Reference</th>
+
+                    <th>Product</th>
+
+                    <th>SKU</th>
+
+                    <th>Warehouse</th>
+
+                    <th>Location</th>
+
+                    <th>Operation</th>
+
+                    <th>Quantity</th>
+
+                    <th>Notes</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for entry in ledger_entries %}
+
+                <tr>
+
+                    <td>
+                        {{ entry.created_at|date:"d M Y, H:i" }}
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ entry.reference }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {{ entry.product.name }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ entry.product.sku }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ entry.location.warehouse.name }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ entry.location.name }}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if entry.operation == 'RECEIPT' %}
+
+                            <span class="status-badge status-ready">
+                                Receipt
+                            </span>
+
+                        {% elif entry.operation == 'DELIVERY' %}
+
+                            <span class="status-badge status-canceled">
+                                Delivery
+                            </span>
+
+                        {% elif entry.operation == 'TRANSFER_IN' %}
+
+                            <span class="status-badge status-ready">
+                                Transfer In
+                            </span>
+
+                        {% elif entry.operation == 'TRANSFER_OUT' %}
+
+                            <span class="status-badge status-canceled">
+                                Transfer Out
+                            </span>
+
+                        {% elif entry.operation == 'ADJUSTMENT' %}
+
+                            <span class="status-badge status-waiting">
+                                Adjustment
+                            </span>
+
+                        {% else %}
+
+                            {{ entry.get_operation_display }}
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if entry.quantity > 0 %}
+
+                            <strong style="color: #198754;">
+                                +{{ entry.quantity }}
+                            </strong>
+
+                        {% else %}
+
+                            <strong style="color: #dc3545;">
+                                {{ entry.quantity }}
+                            </strong>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if entry.notes %}
+
+                            {{ entry.notes }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="9"
+                        style="text-align:center; padding:40px;">
+
+                        <h3>No stock movements found</h3>
+
+                        <p>
+                            Stock movements will appear here
+                            after receipts, deliveries,
+                            transfers, or adjustments.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

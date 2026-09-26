@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}
+Categories - StockSense
+{% endblock %}
+
+{% block page_title %}
+Categories
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Product Categories</h1>
+
+        <p>
+            Organize your products using inventory categories.
+        </p>
+    </div>
+
+    <a href="{% url 'inventory:category_create' %}"
+       class="primary-button">
+        + Add Category
+    </a>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="success-message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<div class="summary-card">
+
+    <div class="summary-icon">
+        📁
+    </div>
+
+    <div>
+
+        <div class="summary-label">
+            Total Categories
+        </div>
+
+        <div class="summary-value">
+            {{ categories|length }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Category Name</th>
+
+                <th>Description</th>
+
+                <th>Products</th>
+
+                <th>Created</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for category in categories %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ category.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {% if category.description %}
+                            {{ category.description }}
+                        {% else %}
+                            <span class="muted">
+                                No description
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ category.products.count }}
+                    </td>
+
+                    <td>
+                        {{ category.created_at|date:"d M Y" }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{% url 'inventory:category_delete' category.pk %}"
+                            class="delete-button"
+                        >
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="empty-row">
+
+                        No categories have been created yet.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<div class="bottom-actions">
+
+    <a
+        href="{% url 'inventory:product_list' %}"
+        class="secondary-button"
+    >
+        ← Back to Products
+    </a>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        margin-bottom: 7px;
+    }
+
+    .page-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        text-decoration: none;
+        padding: 11px 17px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .primary-button {
+        background: #2563eb;
+        color: white;
+    }
+
+    .primary-button:hover {
+        background: #1d4ed8;
+    }
+
+    .secondary-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .secondary-button:hover {
+        background: #e5e7eb;
+    }
+
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 12px 15px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        width: 230px;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 10px;
+
+        padding: 18px;
+
+        margin-bottom: 20px;
+    }
+
+    .summary-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eff6ff;
+
+        border-radius: 9px;
+
+        font-size: 23px;
+    }
+
+    .summary-label {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .summary-value {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .table-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f9fafb;
+        color: #4b5563;
+        font-size: 13px;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .muted {
+        color: #9ca3af;
+    }
+
+    .delete-button {
+        display: inline-block;
+
+        text-decoration: none;
+
+        padding: 6px 10px;
+
+        border-radius: 5px;
+
+        font-size: 12px;
+
+        font-weight: bold;
+
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .delete-button:hover {
+        background: #fecaca;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+
+    .bottom-actions {
+        margin-top: 20px;
+    }
+
+    @media (max-width: 700px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

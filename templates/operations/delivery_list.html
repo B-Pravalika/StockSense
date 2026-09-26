@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Delivery Orders - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Delivery Orders</h1>
+        <p>Manage outgoing inventory deliveries.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'operations:delivery_create' %}"
+           class="btn btn-primary">
+            + New Delivery
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Reference</th>
+                    <th>Destination</th>
+                    <th>Source Warehouse</th>
+                    <th>Source Location</th>
+                    <th>Status</th>
+                    <th>Scheduled Date</th>
+                    <th>Items</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for delivery in deliveries %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ delivery.reference }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ delivery.destination }}
+                    </td>
+
+                    <td>
+                        {{ delivery.source_location.warehouse.name }}
+                    </td>
+
+                    <td>
+                        {{ delivery.source_location.name }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ delivery.get_status_display }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ delivery.scheduled_date|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ delivery.items.all|length }}
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'operations:delivery_detail' delivery.pk %}"
+                           class="btn btn-secondary">
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="8"
+                        style="text-align:center; padding:40px;">
+
+                        <h3>No delivery orders found</h3>
+
+                        <p>Create your first delivery order.</p>
+
+                        <a href="{% url 'operations:delivery_create' %}"
+                           class="btn btn-primary">
+                            Create Delivery
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

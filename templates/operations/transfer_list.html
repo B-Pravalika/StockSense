@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Internal Transfers - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Internal Transfers</h1>
+        <p>Move inventory between warehouse locations.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'operations:transfer_create' %}"
+           class="btn btn-primary">
+            + New Transfer
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Reference</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Status</th>
+                    <th>Scheduled Date</th>
+                    <th>Items</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for transfer in transfers %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ transfer.reference }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ transfer.source_location.warehouse.name }}
+                        -
+                        {{ transfer.source_location.name }}
+                    </td>
+
+                    <td>
+                        {{ transfer.destination_location.warehouse.name }}
+                        -
+                        {{ transfer.destination_location.name }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ transfer.get_status_display }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ transfer.scheduled_date|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ transfer.items.all|length }}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'operations:transfer_detail' transfer.pk %}"
+                           class="btn btn-secondary">
+                            View
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7"
+                        style="text-align:center; padding:40px;">
+
+                        <h3>No internal transfers found</h3>
+
+                        <p>Create your first internal transfer.</p>
+
+                        <a href="{% url 'operations:transfer_create' %}"
+                           class="btn btn-primary">
+                            Create Transfer
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

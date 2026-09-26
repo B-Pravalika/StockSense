@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Warehouse - StockSense
+{% endblock %}
+
+{% block page_title %}
+Delete Warehouse
+{% endblock %}
+
+{% block content %}
+
+<div class="delete-container">
+
+    <div class="warning-icon">
+        ⚠️
+    </div>
+
+    <h1>
+        Delete Warehouse?
+    </h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ warehouse.name }}</strong>?
+    </p>
+
+    <p class="warning-text">
+        This action cannot be undone.
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="actions">
+
+            <a
+                href="{% url 'warehouse:warehouse_list' %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="delete-button"
+            >
+                Delete Warehouse
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .delete-container {
+        max-width: 500px;
+        margin: 60px auto;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .warning-icon {
+        font-size: 45px;
+        margin-bottom: 15px;
+    }
+
+    .delete-container h1 {
+        margin-bottom: 12px;
+    }
+
+    .delete-container p {
+        color: #4b5563;
+        margin-bottom: 10px;
+    }
+
+    .warning-text {
+        color: #dc2626 !important;
+        font-size: 13px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .cancel-button,
+    .delete-button {
+        padding: 11px 18px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .delete-button {
+        border: none;
+        background: #dc2626;
+        color: white;
+    }
+
+</style>
+
+{% endblock %}

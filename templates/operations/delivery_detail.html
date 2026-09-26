@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ delivery.reference }} - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>{{ delivery.reference }}</h1>
+
+        <p>
+            Delivery to {{ delivery.destination }}
+        </p>
+
+    </div>
+
+
+    <div>
+
+        {% if delivery.status == 'DRAFT' %}
+
+        <form method="post"
+              action="{% url 'operations:delivery_validate' delivery.pk %}"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <button type="submit"
+                    class="btn btn-primary">
+                ✓ Validate Delivery
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Delivery Information</h2>
+
+    </div>
+
+
+    <div class="detail-grid">
+
+        <div>
+            <strong>Reference</strong>
+            <p>{{ delivery.reference }}</p>
+        </div>
+
+        <div>
+            <strong>Destination</strong>
+            <p>{{ delivery.destination }}</p>
+        </div>
+
+        <div>
+            <strong>Warehouse</strong>
+            <p>
+                {{ delivery.source_location.warehouse.name }}
+            </p>
+        </div>
+
+        <div>
+            <strong>Source Location</strong>
+            <p>
+                {{ delivery.source_location.name }}
+            </p>
+        </div>
+
+        <div>
+            <strong>Status</strong>
+            <p>
+                {{ delivery.get_status_display }}
+            </p>
+        </div>
+
+        <div>
+            <strong>Scheduled Date</strong>
+            <p>
+                {{ delivery.scheduled_date|default:"—" }}
+            </p>
+        </div>
+
+        <div>
+            <strong>Notes</strong>
+            <p>
+                {{ delivery.notes|default:"—" }}
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Delivery Items</h2>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in delivery.items.all %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ item.product.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ item.product.sku }}
+                    </td>
+
+                    <td>
+                        {{ item.quantity }}
+                    </td>
+
+                    <td>
+                        {{ item.product.unit_of_measure }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4"
+                        style="text-align:center; padding:30px;">
+
+                        No products have been added yet.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% if delivery.status == 'DRAFT' %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Add Product</h2>
+
+    </div>
+
+
+    <form method="post"
+          action="{% url 'operations:delivery_add_item' delivery.pk %}">
+
+        {% csrf_token %}
+
+
+        <div class="form-group">
+
+            <label for="{{ item_form.product.id_for_label }}">
+                Product
+            </label>
+
+            {{ item_form.product }}
+
+            {% if item_form.product.errors %}
+
+            <div class="form-error">
+                {{ item_form.product.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ item_form.quantity.id_for_label }}">
+                Quantity
+            </label>
+
+            {{ item_form.quantity }}
+
+            {% if item_form.quantity.errors %}
+
+            <div class="form-error">
+                {{ item_form.quantity.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <button type="submit"
+                class="btn btn-secondary">
+            + Add Product
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div style="margin-top:20px;">
+
+    <a href="{% url 'operations:delivery_list' %}"
+       class="btn btn-secondary">
+        ← Back to Delivery Orders
+    </a>
+
+</div>
+
+{% endblock %}

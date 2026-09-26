@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Category - StockSense
+{% endblock %}
+
+{% block page_title %}
+Delete Category
+{% endblock %}
+
+{% block content %}
+
+<div class="delete-container">
+
+    <div class="warning-icon">
+        ⚠️
+    </div>
+
+    <h1>
+        Delete Category?
+    </h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ category.name }}</strong>?
+    </p>
+
+    {% if category.products.exists %}
+
+        <div class="warning-box">
+
+            This category currently contains
+            <strong>
+                {{ category.products.count }}
+            </strong>
+            product(s).
+
+            Deleting this category will also delete
+            those products because the Product model
+            uses a cascading relationship.
+
+        </div>
+
+    {% else %}
+
+        <p class="warning-text">
+            This action cannot be undone.
+        </p>
+
+    {% endif %}
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="actions">
+
+            <a
+                href="{% url 'inventory:category_list' %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="delete-button"
+            >
+                Delete Category
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .delete-container {
+        max-width: 550px;
+
+        margin: 60px auto;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 10px;
+
+        padding: 40px;
+
+        text-align: center;
+    }
+
+    .warning-icon {
+        font-size: 45px;
+
+        margin-bottom: 15px;
+    }
+
+    .delete-container h1 {
+        margin-bottom: 12px;
+    }
+
+    .delete-container p {
+        color: #4b5563;
+
+        margin-bottom: 10px;
+    }
+
+    .warning-text {
+        color: #dc2626 !important;
+
+        font-size: 13px;
+    }
+
+    .warning-box {
+        background: #fff7ed;
+
+        color: #9a3412;
+
+        border: 1px solid #fed7aa;
+
+        padding: 14px;
+
+        border-radius: 7px;
+
+        font-size: 13px;
+
+        margin: 20px 0;
+    }
+
+    .actions {
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        margin-top: 25px;
+    }
+
+    .cancel-button,
+    .delete-button {
+        padding: 11px 18px;
+
+        border-radius: 7px;
+
+        text-decoration: none;
+
+        font-weight: bold;
+
+        font-size: 14px;
+
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background: #f3f4f6;
+
+        color: #374151;
+    }
+
+    .delete-button {
+        border: none;
+
+        background: #dc2626;
+
+        color: white;
+    }
+
+</style>
+
+{% endblock %}

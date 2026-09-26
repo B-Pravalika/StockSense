@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ adjustment.reference }} - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>{{ adjustment.reference }}</h1>
+
+        <p>
+            Physical stock reconciliation
+        </p>
+
+    </div>
+
+
+    <div>
+
+        {% if adjustment.status == 'DRAFT' %}
+
+        <form method="post"
+              action="{% url 'operations:adjustment_validate' adjustment.pk %}"
+              style="display:inline;">
+
+            {% csrf_token %}
+
+            <button type="submit"
+                    class="btn btn-primary">
+                ✓ Complete Adjustment
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Adjustment Information</h2>
+
+    </div>
+
+
+    <div class="detail-grid">
+
+        <div>
+
+            <strong>Reference</strong>
+
+            <p>
+                {{ adjustment.reference }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <strong>Status</strong>
+
+            <p>
+                {{ adjustment.get_status_display }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <strong>Warehouse</strong>
+
+            <p>
+                {{ adjustment.location.warehouse.name }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <strong>Location</strong>
+
+            <p>
+                {{ adjustment.location.name }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <strong>Reason</strong>
+
+            <p>
+                {{ adjustment.reason }}
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Counted Stock</h2>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Counted Quantity</th>
+                    <th>Unit</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in adjustment.items.all %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ item.product.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ item.product.sku }}
+                    </td>
+
+                    <td>
+                        {{ item.counted_quantity }}
+                    </td>
+
+                    <td>
+                        {{ item.product.unit_of_measure }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4"
+                        style="text-align:center; padding:30px;">
+
+                        No products have been added yet.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% if adjustment.status == 'DRAFT' %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h2>Add Product Count</h2>
+
+    </div>
+
+
+    <form method="post"
+          action="{% url 'operations:adjustment_add_item' adjustment.pk %}">
+
+        {% csrf_token %}
+
+
+        <div class="form-group">
+
+            <label for="{{ item_form.product.id_for_label }}">
+                Product
+            </label>
+
+            {{ item_form.product }}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ item_form.counted_quantity.id_for_label }}">
+                Physical Count
+            </label>
+
+            {{ item_form.counted_quantity }}
+
+        </div>
+
+
+        <button type="submit"
+                class="btn btn-secondary">
+            + Add Count
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div style="margin-top:20px;">
+
+    <a href="{% url 'operations:adjustment_list' %}"
+       class="btn btn-secondary">
+        ← Back to Adjustments
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ page_title }} - StockSense
+{% endblock %}
+
+{% block page_title %}
+{{ page_title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        <h1>
+            {{ page_title }}
+        </h1>
+
+        <p>
+            {% if product %}
+                Update the product information.
+            {% else %}
+                Add a new product to your inventory.
+            {% endif %}
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="error-message">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="form-group">
+
+            <label for="{{ form.name.id_for_label }}">
+                Product Name
+            </label>
+
+            {{ form.name }}
+
+            {% for error in form.name.errors %}
+                <div class="field-error">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.sku.id_for_label }}">
+                SKU / Product Code
+            </label>
+
+            {{ form.sku }}
+
+            {% for error in form.sku.errors %}
+                <div class="field-error">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.category.id_for_label }}">
+                Category
+            </label>
+
+            {{ form.category }}
+
+            {% for error in form.category.errors %}
+                <div class="field-error">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.unit_of_measure.id_for_label }}">
+                Unit of Measure
+            </label>
+
+            {{ form.unit_of_measure }}
+
+            {% for error in form.unit_of_measure.errors %}
+                <div class="field-error">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'inventory:product_list' %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="submit-button"
+            >
+                {{ button_text }}
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 10px;
+
+        padding: 30px;
+    }
+
+    .form-header {
+        margin-bottom: 25px;
+    }
+
+    .form-header h1 {
+        font-size: 25px;
+        margin-bottom: 7px;
+    }
+
+    .form-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+
+        font-size: 14px;
+        font-weight: bold;
+
+        color: #111827;
+    }
+
+    .form-control {
+        width: 100%;
+
+        padding: 12px 13px;
+
+        border: 1px solid #d1d5db;
+
+        border-radius: 7px;
+
+        font-size: 14px;
+
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #2563eb;
+
+        box-shadow:
+            0 0 0 2px
+            rgba(37, 99, 235, 0.10);
+    }
+
+    .field-error,
+    .error-message {
+        color: #dc2626;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+
+        margin-top: 30px;
+    }
+
+    .cancel-button,
+    .submit-button {
+        padding: 11px 18px;
+
+        border-radius: 7px;
+
+        font-size: 14px;
+        font-weight: bold;
+
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .submit-button {
+        border: none;
+        background: #2563eb;
+        color: white;
+    }
+
+    .submit-button:hover {
+        background: #1d4ed8;
+    }
+
+</style>
+
+{% endblock %}

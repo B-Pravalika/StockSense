@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory Adjustments - StockSense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Inventory Adjustments</h1>
+        <p>Reconcile system stock with physical stock.</p>
+    </div>
+
+    <div>
+        <a href="{% url 'operations:adjustment_create' %}"
+           class="btn btn-primary">
+            + New Adjustment
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Reference</th>
+                    <th>Warehouse</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Items</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for adjustment in adjustments %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ adjustment.reference }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ adjustment.location.warehouse.name }}
+                    </td>
+
+                    <td>
+                        {{ adjustment.location.name }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ adjustment.get_status_display }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ adjustment.reason }}
+                    </td>
+
+                    <td>
+                        {{ adjustment.items.all|length }}
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'operations:adjustment_detail' adjustment.pk %}"
+                           class="btn btn-secondary">
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7"
+                        style="text-align:center; padding:40px;">
+
+                        <h3>No inventory adjustments found</h3>
+
+                        <p>Create your first adjustment.</p>
+
+                        <a href="{% url 'operations:adjustment_create' %}"
+                           class="btn btn-primary">
+                            Create Adjustment
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

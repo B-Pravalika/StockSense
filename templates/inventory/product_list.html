@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}
+Products - StockSense
+{% endblock %}
+
+{% block page_title %}
+Products
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Products</h1>
+
+        <p>
+            Manage your inventory products and product information.
+        </p>
+    </div>
+
+    <a href="{% url 'inventory:product_create' %}"
+       class="primary-button">
+        + Add Product
+    </a>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="success-message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<div class="toolbar">
+
+    <form method="GET"
+          class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="Search by name, SKU or category..."
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+        {% if search %}
+
+            <a href="{% url 'inventory:product_list' %}">
+                Clear
+            </a>
+
+        {% endif %}
+
+    </form>
+
+
+    <a href="{% url 'inventory:category_list' %}"
+       class="secondary-button">
+
+        Manage Categories
+
+    </a>
+
+</div>
+
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Product Name</th>
+
+                <th>SKU</th>
+
+                <th>Category</th>
+
+                <th>Unit</th>
+
+                <th>Created</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for product in products %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ product.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ product.sku }}
+                    </td>
+
+                    <td>
+                        {{ product.category.name }}
+                    </td>
+
+                    <td>
+                        {{ product.unit_of_measure }}
+                    </td>
+
+                    <td>
+                        {{ product.created_at|date:"d M Y" }}
+                    </td>
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{% url 'inventory:product_update' product.pk %}"
+                                class="edit-button"
+                            >
+                                Edit
+                            </a>
+
+                            <a
+                                href="{% url 'inventory:product_delete' product.pk %}"
+                                class="delete-button"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="7"
+                        class="empty-row">
+
+                        {% if search %}
+
+                            No products found for
+                            "{{ search }}".
+
+                        {% else %}
+
+                            No products have been added yet.
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        margin-bottom: 7px;
+    }
+
+    .page-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        text-decoration: none;
+        padding: 11px 17px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .primary-button {
+        background: #2563eb;
+        color: white;
+    }
+
+    .primary-button:hover {
+        background: #1d4ed8;
+    }
+
+    .secondary-button {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .secondary-button:hover {
+        background: #e5e7eb;
+    }
+
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 12px 15px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .toolbar {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .search-form input {
+        width: 100%;
+        max-width: 500px;
+        padding: 11px 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .search-form button {
+        padding: 11px 17px;
+        border: none;
+        border-radius: 6px;
+        background: #2563eb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .search-form a {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .table-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f9fafb;
+        color: #4b5563;
+        font-size: 13px;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 7px;
+    }
+
+    .edit-button,
+    .delete-button {
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .edit-button {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .delete-button {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+
+    @media (max-width: 700px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-form {
+            flex-wrap: wrap;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
