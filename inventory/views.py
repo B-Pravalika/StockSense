@@ -2,10 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import StockForm
-from .models import Category,Product,Stock
-from operations.services.stock_service import adjust_stock
+from .forms import ProductForm, CategoryForm, StockForm
+from .models import Category, Product, Stock
 
+from operations.services.stock_service import adjust_stock
 
 @login_required
 def product_list(request):

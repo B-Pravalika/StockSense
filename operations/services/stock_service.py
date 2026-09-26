@@ -4,9 +4,10 @@ from django.db import transaction
 
 from inventory.models import Stock
 from operations.models import (
+    AdjustmentItem,
     Delivery,
-    InternalTransfer,
     InventoryAdjustment,
+    InternalTransfer,
     Receipt,
     StockLedger,
 )
@@ -384,21 +385,18 @@ def process_transfer(transfer):
 
 @transaction.atomic
 def process_adjustment(adjustment):
-
     adjustment = InventoryAdjustment.objects.select_for_update().get(
         pk=adjustment.pk
     )
 
     if adjustment.status == 'DONE':
         raise ValueError(
-            f'Adjustment {adjustment.reference} '
-            f'has already been completed.'
+            f'Adjustment {adjustment.reference} has already been completed.'
         )
 
     if adjustment.status == 'CANCELED':
         raise ValueError(
-            f'Adjustment {adjustment.reference} '
-            f'is canceled and cannot be completed.'
+            f'Adjustment {adjustment.reference} is canceled and cannot be completed.'
         )
 
     items = list(
@@ -411,15 +409,12 @@ def process_adjustment(adjustment):
         )
 
     for item in items:
-
         if item.counted_quantity < 0:
             raise ValueError(
-                f'Counted quantity for {item.product.name} '
-                f'cannot be negative.'
+                f'Counted quantity for {item.product.name} cannot be negative.'
             )
 
     for item in items:
-
         adjust_stock(
             product=item.product,
             location=adjustment.location,
@@ -429,12 +424,8 @@ def process_adjustment(adjustment):
         )
 
     adjustment.status = 'DONE'
-
     adjustment.save(
-        update_fields=[
-            'status',
-            'updated_at',
-        ]
+        update_fields=['status', 'updated_at']
     )
 
     return adjustment
